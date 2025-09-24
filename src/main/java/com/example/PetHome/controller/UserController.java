@@ -14,6 +14,19 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PostMapping("/register")
+    public Map<String, Object> register(@RequestBody User user) {
+        Map<String, Object> result = new HashMap<>();
+        if (userService.register(user)) {
+            result.put("code", 200);
+            result.put("message", "注册成功");
+        } else {
+            result.put("code", 500);
+            result.put("message", "注册失败，用户名已存在");
+        }
+        return result;
+    }
+
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody Map<String, String> loginForm) {
         Map<String, Object> result = new HashMap<>();
@@ -28,19 +41,6 @@ public class UserController {
         } else {
             result.put("code", 500);
             result.put("message", "用户名或密码错误");
-        }
-        return result;
-    }
-
-    @PostMapping("/register")
-    public Map<String, Object> register(@RequestBody User user) {
-        Map<String, Object> result = new HashMap<>();
-        if (userService.register(user)) {
-            result.put("code", 200);
-            result.put("message", "注册成功");
-        } else {
-            result.put("code", 500);
-            result.put("message", "注册失败，用户名已存在");
         }
         return result;
     }

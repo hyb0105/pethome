@@ -7,28 +7,42 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /**
+     * 配置密码编码器。Spring Security 默认会注入一个 PasswordEncoder Bean。
+     * 虽然我们的 UserService 中使用的是 MD5，但为了满足 Spring Security 的依赖，我们必须提供一个。
+     * BCryptPasswordEncoder 是一个强大的加密器，是一个很好的默认选择。
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * 配置安全过滤器链，这是 Spring Security 的核心配置。
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 禁用 CSRF，因为在前后端分离项目中我们使用 JWT
+                // 禁用 CSRF，因为在前后端分离的 RESTful API 中，我们通常使用 JWT 进行身份验证，而不是 Session。
                 .csrf(AbstractHttpConfigurer::disable)
 
-                // 配置 Session 管理为无状态，不创建和使用 Session
+                // 配置会话管理策略为无状态（Stateless），这与 JWT 认证模式相匹配。
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 // 配置请求授权规则
                 .authorizeHttpRequests(authorize -> authorize
-                        // 允许所有人访问 /api/user/register 和 /api/user/login
+                        // 允许所有对注册和登录接口的请求，无需身份认证。
                         .requestMatchers("/api/user/register", "/api/user/login").permitAll()
-                        // 所有其他请求都需要身份验证
+                        // 所有其他请求都需要经过身份认证。
                         .anyRequest().authenticated()
                 );
-
         return http.build();
     }
 }
