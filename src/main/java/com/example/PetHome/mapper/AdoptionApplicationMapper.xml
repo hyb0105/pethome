@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.PetHome.mapper.AdoptionApplicationMapper">
+
+    <insert id="insertApplication" parameterType="com.example.PetHome.entity.AdoptionApplication" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO adoption_application (pet_id, adopter_id, adopter_name, adopter_phone, reason, status)
+        VALUES (#{petId}, #{adopterId}, #{adopterName}, #{adopterPhone}, #{reason}, 0)
+    </insert>
+
+    <select id="findAllApplications" resultType="com.example.PetHome.entity.AdoptionApplication">
+        SELECT * FROM adoption_application ORDER BY application_time DESC
+    </select>
+
+    <select id="findApplicationsByUserId" resultType="com.example.PetHome.entity.AdoptionApplication">
+        SELECT * FROM adoption_application WHERE adopter_id = #{adopterId} ORDER BY application_time DESC
+    </select>
+
+    <select id="findApplicationById" resultType="com.example.PetHome.entity.AdoptionApplication">
+        SELECT * FROM adoption_application WHERE id = #{id}
+    </select>
+
+    <update id="updateApplicationStatus">
+        UPDATE adoption_application SET status = #{status} WHERE id = #{id}
+    </update>
+
+</mapper>

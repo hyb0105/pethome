@@ -1,0 +1,24 @@
+package com.example.PetHome.mapper;
+
+import com.example.PetHome.entity.AdoptionApplication;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import java.util.List;
+
+@Mapper
+public interface AdoptionApplicationMapper {
+    // 新增领养申请
+    int insertApplication(AdoptionApplication application);
+
+    // (管理员) 查询所有申请
+    List<AdoptionApplication> findAllApplications();
+
+    // (用户) 根据用户ID查询自己的申请
+    List<AdoptionApplication> findApplicationsByUserId(Integer adopterId);
+
+    // (管理员) 根据ID查询单个申请
+    AdoptionApplication findApplicationById(Integer id);
+
+    // (管理员) 更新申请状态
+    int updateApplicationStatus(@Param("id") Integer id, @Param("status") Integer status);
+}
