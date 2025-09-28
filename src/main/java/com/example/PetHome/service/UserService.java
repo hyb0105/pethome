@@ -18,6 +18,8 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired // 1. 在这里注入 JwtUtils
+    private JwtUtils jwtUtils;
     public User findByUsername(String username) {
         return userMapper.findByUsername(username);
     }
@@ -39,6 +41,6 @@ public class UserService {
         if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
             return null;
         }
-        return JwtUtils.createToken(user.getUsername(), user.getRole());
+        return jwtUtils.createToken(user.getUsername(), user.getRole());
     }
 }

@@ -3,8 +3,11 @@ package com.example.PetHome.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.stereotype.Component;
+
 import java.util.Date;
 
+@Component
 public class JwtUtils {
     // 过期时间
     private static final long EXPIRE = 60 * 60 * 24 * 1000L; // 1天
