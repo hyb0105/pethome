@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.PetHome.mapper.PetMapper">
+
+    <insert id="insertPet" parameterType="com.example.PetHome.entity.Pet" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pet (name, `type`, breed, gender, age, description, health_status, sterilization, vaccination, photo_url, `status`, owner_id)
+        VALUES (#{name}, #{type}, #{breed}, #{gender}, #{age}, #{description}, #{healthStatus}, #{sterilization}, #{vaccination}, #{photoUrl}, #{status}, #{ownerId})
+    </insert>
+
+    <select id="findPetById" resultType="com.example.PetHome.entity.Pet">
+        SELECT * FROM pet WHERE id = #{id}
+    </select>
+
+    <select id="findAllPets" resultType="com.example.PetHome.entity.Pet">
+        SELECT * FROM pet ORDER BY create_time DESC
+    </select>
+
+    <update id="updatePet" parameterType="com.example.PetHome.entity.Pet">
+        UPDATE pet
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="type != null">`type` = #{type},</if>
+            <if test="breed != null">breed = #{breed},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="healthStatus != null">health_status = #{healthStatus},</if>
+            <if test="sterilization != null">sterilization = #{sterilization},</if>
+            <if test="vaccination != null">vaccination = #{vaccination},</if>
+            <if test="photoUrl != null">photo_url = #{photoUrl},</if>
+            <if test="status != null">`status` = #{status},</if>
+            <if test="ownerId != null">owner_id = #{ownerId},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deletePetById">
+        DELETE FROM pet WHERE id = #{id}
+    </delete>
+</mapper>
