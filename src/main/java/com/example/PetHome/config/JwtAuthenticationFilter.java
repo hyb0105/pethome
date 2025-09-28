@@ -53,6 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             User user = userService.findByUsername(username);
 
             if (user != null) {
+                System.out.println("===== 权限检查: 用户名: " + user.getUsername() + ", 角色: " + user.getRole() + " =====");
                 // 根据用户的角色创建权限列表
                 List<GrantedAuthority> authorities = new ArrayList<>();
                 // Spring Security需要角色前缀 "ROLE_"

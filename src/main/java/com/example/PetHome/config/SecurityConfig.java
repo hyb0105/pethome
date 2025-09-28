@@ -4,7 +4,7 @@ package com.example.PetHome.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy; // 1. 导入 Lazy 注解
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,8 +19,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // 2. 使用 @Lazy 注解来延迟加载 JwtAuthenticationFilter
-    // 这会打破 A -> B 的依赖链
     @Autowired
     @Lazy
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -38,9 +36,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/user/register", "/api/user/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/pets", "/api/pets/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/pets").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/pets/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/pets/**").hasRole("ADMIN")
+                        // 【关键修改】 将 .hasRole("ADMIN") 改为 .hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/pets").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/pets/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/pets/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
