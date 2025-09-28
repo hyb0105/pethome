@@ -1,3 +1,4 @@
+// 文件路径: src/main/java/com/example/PetHome/config/JwtAuthenticationFilter.java
 package com.example.PetHome.config;
 
 import com.example.PetHome.entity.User;
@@ -29,6 +30,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserService userService;
 
+    // 【关键修改】 我们不再需要 logger.warn，直接在catch块中处理即可
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -43,37 +46,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Claims claims = jwtUtils.getClaimsByToken(token);
                 username = claims.getSubject();
             } catch (Exception e) {
-                // Token 无效 (例如过期或签名错误)
-                logger.warn("JWT Token is expired or invalid", e);
+                // Token 无效 (例如过期或签名错误)，直接打印到控制台
+                System.err.println("JWT Token is expired or invalid: " + e.getMessage());
             }
         }
 
-        // 如果Token有效，并且当前用户还未被认证
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             User user = userService.findByUsername(username);
 
             if (user != null) {
                 System.out.println("===== 权限检查: 用户名: " + user.getUsername() + ", 角色: " + user.getRole() + " =====");
-                // 根据用户的角色创建权限列表
                 List<GrantedAuthority> authorities = new ArrayList<>();
-                // Spring Security需要角色前缀 "ROLE_"
-                // 我们约定 role=1 为管理员
                 if (user.getRole() == 1) {
                     authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
                 } else {
                     authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
                 }
-
-                // 创建认证对象
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         user.getUsername(), null, authorities);
-
-                // 将认证信息存入SecurityContext，表示当前用户已认证
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
 
-        // 继续执行过滤器链
         filterChain.doFilter(request, response);
     }
 }
