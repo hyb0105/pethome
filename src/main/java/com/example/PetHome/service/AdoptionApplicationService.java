@@ -38,8 +38,8 @@ public class AdoptionApplicationService {
         applicationMapper.insertApplication(application);
 
         // 提交申请后，将宠物状态更新为"审核中" (status=2)
-        pet.setStatus(2);
-        petMapper.updatePet(pet);
+//        pet.setStatus(2);
+//        petMapper.updatePet(pet);
 
         return application;
     }

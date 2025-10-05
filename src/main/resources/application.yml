@@ -10,3 +10,4 @@ spring:
 logging:
   level:
     org.springframework.security: DEBUG
+    com.example.PetHome.mapper: TRACE

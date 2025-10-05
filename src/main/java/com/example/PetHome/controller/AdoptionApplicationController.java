@@ -48,6 +48,7 @@ public class AdoptionApplicationController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<?> approveApplication(@PathVariable Integer id, @RequestBody Map<String, Integer> statusMap) {
         Integer status = statusMap.get("status");
+        System.out.println("====== 后端接收到的审批状态: " + status + " ======");
         if (status == null || (status != 1 && status != 2)) {
             return ResponseEntity.badRequest().body("无效的状态值");
         }
