@@ -14,7 +14,23 @@
     </select>
 
     <select id="findAllPets" resultType="com.example.PetHome.entity.Pet">
-        SELECT * FROM pet ORDER BY create_time DESC
+        SELECT * FROM pet
+        <where>
+            status = 0
+            <if test="type != null and type != ''">
+                AND `type` LIKE CONCAT('%', #{type}, '%')
+            </if>
+            <if test="breed != null and breed != ''">
+                AND breed LIKE CONCAT('%', #{breed}, '%')
+            </if>
+            <if test="city != null and city != ''">
+                AND city LIKE CONCAT('%', #{city}, '%')
+            </if>
+            <if test="gender != null">
+                AND gender = #{gender}
+            </if>
+        </where>
+        ORDER BY create_time DESC
     </select>
 
     <update id="updatePet" parameterType="com.example.PetHome.entity.Pet">

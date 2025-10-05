@@ -31,8 +31,8 @@ public class PetService {
         return petMapper.findPetById(id);
     }
 
-    public List<Pet> getAllPets() {
-        return petMapper.findAllPets();
+    public List<Pet> getAllPets(String type, String breed, String city, Integer gender) {
+        return petMapper.findAllPets(type, breed, city, gender);
     }
 
     public Pet updatePet(Pet pet) {

@@ -24,8 +24,13 @@ public class PetController {
     }
 
     @GetMapping
-    public List<Pet> getAllPets() {
-        return petService.getAllPets();
+    public List<Pet> getAllPets(
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String breed,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) Integer gender
+    ) {
+        return petService.getAllPets(type, breed, city, gender);
     }
 
     @GetMapping("/{id}")
