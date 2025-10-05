@@ -13,7 +13,7 @@ public interface PetMapper {
     List<Pet> findAllPets(@Param("type") String type,
                           @Param("breed") String breed,
                           @Param("city") String city,
-                          @Param("gender") Integer gender);List<Pet> findAllPets();
+                          @Param("gender") Integer gender);
     int updatePet(Pet pet);
     int deletePetById(Integer id);
 }

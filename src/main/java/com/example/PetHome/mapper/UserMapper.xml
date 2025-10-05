@@ -4,7 +4,21 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.PetHome.mapper.UserMapper">
 
-    <select id="findByUsername" resultType="com.example.PetHome.entity.User">
+    <resultMap id="UserResultMap" type="com.example.PetHome.entity.User">
+        <id property="id" column="id" />
+        <result property="username" column="username" />
+        <result property="password" column="password" />
+        <result property="phone" column="phone" />
+        <result property="email" column="email" />
+        <result property="avatar" column="avatar" />
+        <result property="realName" column="real_name" />
+        <result property="idCard" column="id_card" />
+        <result property="role" column="role" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <select id="findByUsername" resultMap="UserResultMap">
         SELECT * FROM user WHERE username = #{username}
     </select>
 
@@ -12,4 +26,20 @@
         INSERT INTO user (username, password, phone, email, avatar, role, create_time)
         VALUES (#{username}, #{password}, #{phone}, #{email}, #{avatar}, #{role}, #{createTime})
     </insert>
+
+    <update id="updateUser" parameterType="com.example.PetHome.entity.User">
+        UPDATE user
+        <set>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="realName != null">real_name = #{realName},</if>
+            <if test="idCard != null">id_card = #{idCard},</if>
+            update_time = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+    <update id="updatePassword">
+        UPDATE user SET password = #{newPassword}, update_time = NOW() WHERE id = #{id}
+    </update>
 </mapper>

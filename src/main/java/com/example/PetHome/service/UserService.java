@@ -43,4 +43,53 @@ public class UserService {
         }
         return jwtUtils.createToken(user.getUsername(), user.getRole());
     }
+
+    // 【新增】获取用户个人资料
+    public User getUserProfile(String username) {
+        User user = userMapper.findByUsername(username);
+        if (user != null) {
+            // 出于安全考虑，返回前清空密码字段
+            user.setPassword(null);
+        }
+        return user;
+    }
+
+    // 【新增】更新用户个人资料
+    public User updateUserProfile(String username, User userUpdates) {
+        User currentUser = userMapper.findByUsername(username);
+        if (currentUser == null) {
+            return null; // 用户不存在
+        }
+
+        // 将更新的字段设置到当前用户对象上
+        currentUser.setPhone(userUpdates.getPhone());
+        currentUser.setEmail(userUpdates.getEmail());
+        currentUser.setAvatar(userUpdates.getAvatar());
+        currentUser.setRealName(userUpdates.getRealName());
+        currentUser.setIdCard(userUpdates.getIdCard());
+
+        userMapper.updateUser(currentUser);
+
+        // 返回更新后的用户信息（同样清空密码）
+        return getUserProfile(username);
+    }
+
+    // 【新增】修改用户密码
+    public boolean changePassword(String username, String oldPassword, String newPassword) {
+        User currentUser = userMapper.findByUsername(username);
+        if (currentUser == null) {
+            return false; // 用户不存在
+        }
+
+        // 1. 验证旧密码是否正确
+        if (!passwordEncoder.matches(oldPassword, currentUser.getPassword())) {
+            return false; // 旧密码错误
+        }
+
+        // 2. 将新密码加密后更新到数据库
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+        userMapper.updatePassword(currentUser.getId(), encodedNewPassword);
+
+        return true;
+    }
 }

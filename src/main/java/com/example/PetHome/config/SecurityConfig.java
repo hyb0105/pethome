@@ -38,6 +38,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/user/register", "/api/user/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/pets", "/api/pets/**").permitAll()
+                        // 【新增】允许任何人访问上传的图片
+                        .requestMatchers("/uploads/**").permitAll()
                         // 我们将在这里保留这些规则，作为第一道防线
                         .requestMatchers(HttpMethod.POST, "/api/pets").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/pets/**").hasAuthority("ROLE_ADMIN")

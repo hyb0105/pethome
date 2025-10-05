@@ -11,4 +11,10 @@ public interface UserMapper {
 
     // 插入新用户
     int insertUser(User user);
+
+    // 【新增】更新用户信息的方法
+    int updateUser(User user);
+
+    // 【新增】根据用户ID更新密码
+    int updatePassword(@Param("id") Integer id, @Param("newPassword") String newPassword);
 }
