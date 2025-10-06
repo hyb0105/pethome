@@ -4,16 +4,33 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.PetHome.mapper.PetMapper">
 
+    <resultMap id="PetResultMap" type="com.example.PetHome.entity.Pet">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="breed" column="breed"/>
+        <result property="gender" column="gender"/>
+        <result property="age" column="age"/>
+        <result property="description" column="description"/>
+        <result property="healthStatus" column="health_status"/>
+        <result property="sterilization" column="sterilization"/>
+        <result property="vaccination" column="vaccination"/>
+        <result property="photoUrl" column="photo_url"/>
+        <result property="status" column="status"/>
+        <result property="ownerId" column="owner_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
     <insert id="insertPet" parameterType="com.example.PetHome.entity.Pet" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO pet (name, `type`, breed, gender, age, description, health_status, sterilization, vaccination, photo_url, `status`, owner_id)
         VALUES (#{name}, #{type}, #{breed}, #{gender}, #{age}, #{description}, #{healthStatus}, #{sterilization}, #{vaccination}, #{photoUrl}, #{status}, #{ownerId})
     </insert>
 
-    <select id="findPetById" resultType="com.example.PetHome.entity.Pet">
+    <select id="findPetById" resultMap="PetResultMap">
         SELECT * FROM pet WHERE id = #{id}
     </select>
 
-    <select id="findAllPets" resultType="com.example.PetHome.entity.Pet">
+    <select id="findAllPets" resultMap="PetResultMap">
         SELECT * FROM pet
         <where>
             status = 0

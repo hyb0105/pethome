@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import com.example.PetHome.entity.PageResult; // 【新增】导入PageResult
 
 @RestController
 @RequestMapping("/api/pets")
@@ -24,13 +25,16 @@ public class PetController {
     }
 
     @GetMapping
-    public List<Pet> getAllPets(
+    public PageResult<Pet> getAllPets(
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String breed,
             @RequestParam(required = false) String city,
-            @RequestParam(required = false) Integer gender
+            @RequestParam(required = false) Integer gender,
+            // 【新增】分页参数，并设置默认值
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize
     ) {
-        return petService.getAllPets(type, breed, city, gender);
+        return petService.getAllPets(type, breed, city, gender, pageNum, pageSize);
     }
 
     @GetMapping("/{id}")
