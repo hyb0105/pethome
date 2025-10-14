@@ -33,7 +33,9 @@
     <select id="findAllPets" resultMap="PetResultMap">
         SELECT * FROM pet
         <where>
-            status = 0
+            <if test="!isAdmin">
+                status = 0
+            </if>
             <if test="type != null and type != ''">
                 AND `type` LIKE CONCAT('%', #{type}, '%')
             </if>

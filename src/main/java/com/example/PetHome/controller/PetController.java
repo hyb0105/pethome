@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 import com.example.PetHome.entity.PageResult; // 【新增】导入PageResult
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
 @RequestMapping("/api/pets")
@@ -30,11 +32,16 @@ public class PetController {
             @RequestParam(required = false) String breed,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) Integer gender,
-            // 【新增】分页参数，并设置默认值
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize
     ) {
-        return petService.getAllPets(type, breed, city, gender, pageNum, pageSize);
+        // 【新增】判断当前用户是否为管理员
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        // 【修改】将 isAdmin 结果传递给 Service
+        return petService.getAllPets(type, breed, city, gender, pageNum, pageSize, isAdmin);
     }
 
     @GetMapping("/{id}")
