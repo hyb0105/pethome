@@ -9,6 +9,7 @@
         <result property="name" column="name"/>
         <result property="type" column="type"/>
         <result property="breed" column="breed"/>
+        <result property="city" column="city"/>
         <result property="gender" column="gender"/>
         <result property="age" column="age"/>
         <result property="description" column="description"/>
@@ -22,8 +23,8 @@
     </resultMap>
 
     <insert id="insertPet" parameterType="com.example.PetHome.entity.Pet" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO pet (name, `type`, breed, gender, age, description, health_status, sterilization, vaccination, photo_url, `status`, owner_id)
-        VALUES (#{name}, #{type}, #{breed}, #{gender}, #{age}, #{description}, #{healthStatus}, #{sterilization}, #{vaccination}, #{photoUrl}, #{status}, #{ownerId})
+        INSERT INTO pet (name, `type`, breed,city, gender, age, description, health_status, sterilization, vaccination, photo_url, `status`, owner_id)
+        VALUES (#{name}, #{type}, #{breed}, #{city}, #{gender}, #{age}, #{description}, #{healthStatus}, #{sterilization}, #{vaccination}, #{photoUrl}, #{status}, #{ownerId})
     </insert>
 
     <select id="findPetById" resultMap="PetResultMap">
@@ -58,6 +59,7 @@
             <if test="name != null">name = #{name},</if>
             <if test="type != null">`type` = #{type},</if>
             <if test="breed != null">breed = #{breed},</if>
+            <if test="city != null">city = #{city},</if>
             <if test="gender != null">gender = #{gender},</if>
             <if test="age != null">age = #{age},</if>
             <if test="description != null">description = #{description},</if>
