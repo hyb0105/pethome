@@ -17,4 +17,13 @@ public interface UserMapper {
 
     // 【新增】根据用户ID更新密码
     int updatePassword(@Param("id") Integer id, @Param("newPassword") String newPassword);
+
+    // 【新增】根据ID查询用户
+    User findById(@Param("id") Integer id);
+
+    // 【新增】查询所有用户
+    List<User> findAllUsers();
+
+    // 【新增】管理员更新用户信息（包含角色）
+    int adminUpdateUser(User user);
 }

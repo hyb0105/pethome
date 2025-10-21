@@ -92,4 +92,41 @@ public class UserService {
 
         return true;
     }
+    // 【新增】(管理员) 获取所有用户列表
+    public List<User> getAllUsers() {
+        List<User> users = userMapper.findAllUsers();
+        // 遍历列表，清空密码
+        for (User user : users) {
+            user.setPassword(null);
+        }
+        return users;
+    }
+
+    // 【新增】(管理员) 更新指定ID用户的信息
+    public User adminUpdateUserProfile(Integer userId, User userUpdates) {
+        User userToUpdate = userMapper.findById(userId);
+        if (userToUpdate == null) {
+            return null; // 用户不存在
+        }
+
+        // 更新允许管理员修改的字段
+        // 用户名(username) 和 密码(password) 不允许在此处修改
+        userToUpdate.setPhone(userUpdates.getPhone());
+        userToUpdate.setEmail(userUpdates.getEmail());
+        userToUpdate.setAvatar(userUpdates.getAvatar());
+        userToUpdate.setRealName(userUpdates.getRealName());
+        userToUpdate.setIdCard(userUpdates.getIdCard());
+        userToUpdate.setRole(userUpdates.getRole()); // 允许修改角色
+
+        userMapper.adminUpdateUser(userToUpdate);
+
+        // 返回更新后的用户信息
+        userToUpdate.setPassword(null); // 清空密码
+        return userToUpdate;
+    }
+
+    // 【新增】辅助方法，根据ID查找用户
+    public User findById(Integer id) {
+        return userMapper.findById(id);
+    }
 }

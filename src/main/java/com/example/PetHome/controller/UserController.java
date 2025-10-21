@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity; // 新增导入
 import java.security.Principal; // 新增导入
 import com.example.PetHome.entity.PasswordChangeDTO; // 【新增】导入DTO
 import java.util.Map; // 【新增】导入Map
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -88,4 +89,27 @@ public class UserController {
             return ResponseEntity.badRequest().body(Map.of("message", "旧密码错误或操作失败"));
         }
     }
+
+    // 【新增】(管理员) 获取所有用户列表
+    @GetMapping("/all")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    // 【新增】(管理员) 更新指定ID用户的信息
+    // 注意：这个 PUT 路由是 /api/user/{id}，
+    // 而用户自己更新自己资料的路由是 /api/user/profile，
+    // 两者不会冲突。
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<User> adminUpdateUser(@PathVariable Integer id, @RequestBody User userUpdates) {
+        User updatedUser = userService.adminUpdateUserProfile(id, userUpdates);
+        if (updatedUser != null) {
+            return ResponseEntity.ok(updatedUser);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 }

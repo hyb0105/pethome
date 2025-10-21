@@ -27,7 +27,15 @@
         VALUES (#{username}, #{password}, #{phone}, #{email}, #{avatar}, #{role}, #{createTime})
     </insert>
 
-    <update id="updateUser" parameterType="com.example.PetHome.entity.User">
+    <select id="findById" resultMap="UserResultMap">
+        SELECT * FROM user WHERE id = #{id}
+    </select>
+
+    <select id="findAllUsers" resultMap="UserResultMap">
+        SELECT * FROM user ORDER BY id ASC
+    </select>
+
+    <update id="adminUpdateUser" parameterType="com.example.PetHome.entity.User">
         UPDATE user
         <set>
             <if test="phone != null">phone = #{phone},</if>
@@ -35,7 +43,7 @@
             <if test="avatar != null">avatar = #{avatar},</if>
             <if test="realName != null">real_name = #{realName},</if>
             <if test="idCard != null">id_card = #{idCard},</if>
-            update_time = NOW()
+            <if test="role != null">role = #{role},</if> update_time = NOW()
         </set>
         WHERE id = #{id}
     </update>
