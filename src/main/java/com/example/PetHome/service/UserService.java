@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder; // 导入 PasswordEncoder
 import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
+import java.util.List;
+
 // import org.apache.commons.codec.digest.DigestUtils; // 不再需要 MD5
 
 @Service
@@ -128,5 +130,34 @@ public class UserService {
     // 【新增】辅助方法，根据ID查找用户
     public User findById(Integer id) {
         return userMapper.findById(id);
+    }
+    // 【【新增】】(管理员) 重置用户密码
+    public boolean adminResetUserPassword(Integer userId, String newPassword) {
+        User userToUpdate = userMapper.findById(userId);
+        if (userToUpdate == null) {
+            return false; // 用户不存在
+        }
+
+        // 1. 将新密码加密
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+
+        // 2. 更新到数据库 (复用 updatePassword)
+        userMapper.updatePassword(userId, encodedNewPassword);
+
+        return true;
+    }
+
+    // 【【新增】】(管理员) 删除用户
+    public boolean deleteUser(Integer userId) {
+        // 检查用户是否存在
+        if (userMapper.findById(userId) == null) {
+            return false; // 用户不存在
+        }
+
+        // TODO: 在实际生产中，您可能需要先处理该用户关联的领养申请或宠物
+        // (例如：将 adoption_application 表中对应的 adopter_id 设为 NULL)
+        // 为保持简单，我们这里直接删除。如果存在外键约束，这里会失败。
+
+        return userMapper.deleteUserById(userId) > 0;
     }
 }

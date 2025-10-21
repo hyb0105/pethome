@@ -3,6 +3,8 @@ package com.example.PetHome.mapper;
 import com.example.PetHome.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import java.util.List;
+
 
 @Mapper
 public interface UserMapper {
@@ -26,4 +28,7 @@ public interface UserMapper {
 
     // 【新增】管理员更新用户信息（包含角色）
     int adminUpdateUser(User user);
+
+    // 根据ID删除用户
+    int deleteUserById(@Param("id") Integer id);
 }

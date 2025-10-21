@@ -112,4 +112,42 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
+    // 【【新增】】(管理员) 重置指定ID用户的密码
+    @PutMapping("/{id}/password")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<?> adminResetPassword(@PathVariable Integer id, @RequestBody Map<String, String> passwordMap) {
+        String newPassword = passwordMap.get("newPassword");
+        if (newPassword == null || newPassword.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "新密码不能为空"));
+        }
+
+        boolean success = userService.adminResetUserPassword(id, newPassword);
+
+        if (success) {
+            return ResponseEntity.ok().body(Map.of("message", "密码重置成功"));
+        } else {
+            return ResponseEntity.notFound().body(Map.of("message", "用户不存在"));
+        }
+    }
+
+    // 【【新增】】(管理员) 删除指定ID的用户
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
+        // （可选）防止管理员删除自己
+        // Principal principal
+        // if (userService.findByUsername(principal.getName()).getId().equals(id)) {
+        //     return ResponseEntity.badRequest().body(Map.of("message", "不能删除您自己的账户"));
+        // }
+
+        boolean success = userService.deleteUser(id);
+
+        if (success) {
+            return ResponseEntity.ok().body(Map.of("message", "用户删除成功"));
+        } else {
+            // 如果因为外键约束删除失败，这里也会返回 "false"
+            return ResponseEntity.status(500).body(Map.of("message", "删除失败，可能该用户有关联数据（如领养申请）"));
+        }
+    }
+
 }

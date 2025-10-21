@@ -50,4 +50,7 @@
     <update id="updatePassword">
         UPDATE user SET password = #{newPassword}, update_time = NOW() WHERE id = #{id}
     </update>
+    <delete id="deleteUserById">
+        DELETE FROM user WHERE id = #{id}
+    </delete>
 </mapper>
