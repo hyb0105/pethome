@@ -47,6 +47,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/user/register", "/api/user/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/pets", "/api/pets/**").permitAll()
+
+                        .requestMatchers("/uploads/**").permitAll() // 允许公开访问上传的文件
                         // ... 其他requestMatchers规则保持不变 ...
                         .anyRequest().authenticated()
                 )
