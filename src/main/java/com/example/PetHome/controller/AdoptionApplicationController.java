@@ -1,5 +1,6 @@
 package com.example.PetHome.controller;
 
+import com.example.PetHome.entity.AdminApplicationDetailDTO;
 import com.example.PetHome.entity.AdoptionApplication;
 import com.example.PetHome.service.AdoptionApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,5 +58,17 @@ public class AdoptionApplicationController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    // 【新增】管理员根据ID获取申请详情
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<AdminApplicationDetailDTO> getApplicationDetail(@PathVariable Integer id) {
+        AdminApplicationDetailDTO detail = applicationService.getApplicationDetail(id);
+        if (detail != null) {
+            return ResponseEntity.ok(detail);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

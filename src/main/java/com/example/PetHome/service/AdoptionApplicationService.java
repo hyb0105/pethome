@@ -1,12 +1,10 @@
 package com.example.PetHome.service;
 
-import com.example.PetHome.entity.Address;
-import com.example.PetHome.entity.AdoptionApplication;
-import com.example.PetHome.entity.Pet;
-import com.example.PetHome.entity.User;
+import com.example.PetHome.entity.*;
 import com.example.PetHome.mapper.AdoptionApplicationMapper;
 import com.example.PetHome.mapper.PetMapper;
 import com.example.PetHome.mapper.UserMapper;
+import com.example.PetHome.mapper.AddressMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +22,9 @@ public class AdoptionApplicationService {
 
     @Autowired
     private PetMapper petMapper;
+
+    @Autowired
+    private AddressMapper addressMapper;
 
     // 用户提交申请
     @Transactional
@@ -78,6 +79,12 @@ public class AdoptionApplicationService {
             }
         }
         return true;
+    }
+
+    // 【新增】获取申请详情
+    public AdminApplicationDetailDTO getApplicationDetail(Integer applicationId) {
+        // 这里可以加入逻辑，比如检查调用者是否有权限查看等
+        return applicationMapper.findApplicationDetailById(applicationId);
     }
 
     public List<AdoptionApplication> getMyApplications(String username) {

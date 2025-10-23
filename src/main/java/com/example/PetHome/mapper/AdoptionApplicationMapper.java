@@ -1,5 +1,6 @@
 package com.example.PetHome.mapper;
 
+import com.example.PetHome.entity.AdminApplicationDetailDTO;
 import com.example.PetHome.entity.AdoptionApplication;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -18,6 +19,9 @@ public interface AdoptionApplicationMapper {
 
     // (管理员) 根据ID查询单个申请
     AdoptionApplication findApplicationById(Integer id);
+
+    // 【新增】(管理员) 根据ID查询申请详情 (包含关联信息)
+    AdminApplicationDetailDTO findApplicationDetailById(@Param("id") Integer id);
 
     // (管理员) 更新申请状态
     int updateApplicationStatus(@Param("id") Integer id, @Param("status") Integer status);

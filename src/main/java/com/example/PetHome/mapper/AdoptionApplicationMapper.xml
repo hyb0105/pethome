@@ -16,9 +16,10 @@
     </resultMap>
 
     <insert id="insertApplication" parameterType="com.example.PetHome.entity.AdoptionApplication" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO adoption_application (pet_id, adopter_id, adopter_name, adopter_phone, reason, status)
-        VALUES (#{petId}, #{adopterId}, #{adopterName}, #{adopterPhone}, #{reason}, 0)
-        INSERT INTO adoption_application (pet_id, adopter_id, adopter_name, adopter_phone, reason, status, address_id) VALUES (#{petId}, #{adopterId}, #{adopterName}, #{adopterPhone}, #{reason}, 0, #{addressId})
+        INSERT INTO adoption_application
+        (pet_id, adopter_id, adopter_name, adopter_phone, reason, status, address_id)
+        VALUES
+            (#{petId}, #{adopterId}, #{adopterName}, #{adopterPhone}, #{reason}, 0, #{addressId})
     </insert>
 
     <select id="findAllApplications" resultMap="ApplicationResultMap">
@@ -36,5 +37,62 @@
     <update id="updateApplicationStatus">
         UPDATE adoption_application SET status = #{status} WHERE id = #{id}
     </update>
+    <resultMap id="ApplicationDetailResultMap" type="com.example.PetHome.entity.AdminApplicationDetailDTO">
+        <id property="id" column="app_id"/>
+        <result property="petId" column="app_pet_id"/>
+        <result property="adopterId" column="app_adopter_id"/>
+        <result property="adopterName" column="app_adopter_name"/>
+        <result property="adopterPhone" column="app_adopter_phone"/>
+        <result property="reason" column="app_reason"/>
+        <result property="status" column="app_status"/>
+        <result property="applicationTime" column="app_application_time"/>
+        <result property="addressId" column="app_address_id"/>
+        <result property="petName" column="p_name"/>
+        <result property="petType" column="p_type"/>
+        <result property="petBreed" column="p_breed"/>
+        <result property="petPhotoUrl" column="p_photo_url"/>
+        <result property="adopterUsername" column="u_username"/>
+        <result property="adopterEmail" column="u_email"/>
+        <result property="addressRecipientName" column="addr_recipient_name"/>
+        <result property="addressPhone" column="addr_phone"/>
+        <result property="addressProvince" column="addr_province"/>
+        <result property="addressCity" column="addr_city"/>
+        <result property="addressDistrict" column="addr_district"/>
+        <result property="addressDetailedAddress" column="addr_detailed_address"/>
+        <result property="addressIsDefault" column="addr_is_default"/>
+    </resultMap>
+
+    <select id="findApplicationDetailById" resultMap="ApplicationDetailResultMap">
+        SELECT
+            app.id AS app_id,
+            app.pet_id AS app_pet_id,
+            app.adopter_id AS app_adopter_id,
+            app.adopter_name AS app_adopter_name,
+            app.adopter_phone AS app_adopter_phone,
+            app.reason AS app_reason,
+            app.status AS app_status,
+            app.application_time AS app_application_time,
+            app.address_id AS app_address_id,
+            p.name AS p_name,
+            p.type AS p_type,
+            p.breed AS p_breed,
+            p.photo_url AS p_photo_url,
+            u.username AS u_username,
+            u.email AS u_email,
+            addr.recipient_name AS addr_recipient_name,
+            addr.phone AS addr_phone,
+            addr.province AS addr_province,
+            addr.city AS addr_city,
+            addr.district AS addr_district,
+            addr.detailed_address AS addr_detailed_address,
+            addr.is_default AS addr_is_default
+        FROM
+            adoption_application app
+                LEFT JOIN pet p ON app.pet_id = p.id
+                LEFT JOIN user u ON app.adopter_id = u.id
+                LEFT JOIN address addr ON app.address_id = addr.id
+        WHERE
+            app.id = #{id}
+    </select>
 
 </mapper>
