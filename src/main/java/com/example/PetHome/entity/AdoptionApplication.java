@@ -13,4 +13,5 @@ public class AdoptionApplication {
     private String reason;
     private Integer status;
     private Timestamp applicationTime;
+    private Integer addressId;
 }

@@ -1,5 +1,6 @@
 package com.example.PetHome.service;
 
+import com.example.PetHome.entity.Address;
 import com.example.PetHome.entity.AdoptionApplication;
 import com.example.PetHome.entity.Pet;
 import com.example.PetHome.entity.User;
@@ -29,6 +30,12 @@ public class AdoptionApplicationService {
     public AdoptionApplication createApplication(AdoptionApplication application, String username) {
         User user = userMapper.findByUsername(username);
         Pet pet = petMapper.findPetById(application.getPetId());
+
+        // 【新增】验证地址 ID (如果前端传了的话)
+        Address address = null;
+        if (application.getAddressId() != null) {
+            address = addressMapper.findAddressById(application.getAddressId(), user.getId());
+        }
 
         if (user == null || pet == null || pet.getStatus() != 0) { // 宠物状态必须是"待领养"
             return null;

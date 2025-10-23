@@ -18,6 +18,7 @@
     <insert id="insertApplication" parameterType="com.example.PetHome.entity.AdoptionApplication" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO adoption_application (pet_id, adopter_id, adopter_name, adopter_phone, reason, status)
         VALUES (#{petId}, #{adopterId}, #{adopterName}, #{adopterPhone}, #{reason}, 0)
+        INSERT INTO adoption_application (pet_id, adopter_id, adopter_name, adopter_phone, reason, status, address_id) VALUES (#{petId}, #{adopterId}, #{adopterName}, #{adopterPhone}, #{reason}, 0, #{addressId})
     </insert>
 
     <select id="findAllApplications" resultMap="ApplicationResultMap">
