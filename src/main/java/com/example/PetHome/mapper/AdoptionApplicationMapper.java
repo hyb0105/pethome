@@ -24,5 +24,11 @@ public interface AdoptionApplicationMapper {
     AdminApplicationDetailDTO findApplicationDetailById(@Param("id") Integer id);
 
     // (管理员) 更新申请状态
-    int updateApplicationStatus(@Param("id") Integer id, @Param("status") Integer status);
+    int updateApplicationStatus(@Param("id") Integer id, @Param("status") Integer status,@Param("rejectionReason") String rejectionReason);
+
+    // 【新增】用户重新提交申请 (更新状态和时间)
+    int resubmitApplicationStatus(@Param("id") Integer id, @Param("adopterId") Integer adopterId);
+
+    // 【修改】用户重新提交申请 (更新状态、时间和可编辑字段)
+    int resubmitApplication(AdoptionApplication application);
 }

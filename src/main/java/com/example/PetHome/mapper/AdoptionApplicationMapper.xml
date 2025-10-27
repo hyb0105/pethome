@@ -37,6 +37,31 @@
     <update id="updateApplicationStatus">
         UPDATE adoption_application SET status = #{status} WHERE id = #{id}
     </update>
+    <update id="resubmitApplicationStatus">
+        UPDATE adoption_application
+        SET
+            status = #{status},
+            rejection_reason = CASE
+                                   WHEN #{status} = 2 THEN #{rejectionReason}
+                                   ELSE NULL
+                END
+        WHERE id = #{id}
+    </update>
+    <update id="resubmitApplication" parameterType="com.example.PetHome.entity.AdoptionApplication">
+        UPDATE adoption_application
+        SET
+            adopter_name = #{adopterName},     -- 更新申请人姓名
+            adopter_phone = #{adopterPhone},   -- 更新申请人电话
+            reason = #{reason},               -- 更新申请理由
+            address_id = #{addressId},         -- 更新地址ID
+            status = 0,                       -- 将状态重置为 待审核
+            application_time = NOW()          -- 更新申请时间为当前时间
+            rejection_reason = NULL            --清空拒绝理由
+        WHERE id = #{id}                      -- 匹配申请 ID
+          AND adopter_id = #{adopterId}        -- 确保是该用户的申请
+          AND status = 2                      -- 确保只有已拒绝的申请才能重新提交
+    </update>
+
     <resultMap id="ApplicationDetailResultMap" type="com.example.PetHome.entity.AdminApplicationDetailDTO">
         <id property="id" column="app_id"/>
         <result property="petId" column="app_pet_id"/>

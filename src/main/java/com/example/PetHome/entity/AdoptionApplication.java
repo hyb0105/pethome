@@ -14,4 +14,5 @@ public class AdoptionApplication {
     private Integer status;
     private Timestamp applicationTime;
     private Integer addressId;
+    private String rejectionReason; // 【新增】
 }
