@@ -13,6 +13,7 @@
         <result property="reason" column="reason" />
         <result property="status" column="status" />
         <result property="applicationTime" column="application_time" />
+        <result property="rejectionReason" column="app_rejection_reason"/>
     </resultMap>
 
     <insert id="insertApplication" parameterType="com.example.PetHome.entity.AdoptionApplication" useGeneratedKeys="true" keyProperty="id">
@@ -55,8 +56,8 @@
             reason = #{reason},               -- 更新申请理由
             address_id = #{addressId},         -- 更新地址ID
             status = 0,                       -- 将状态重置为 待审核
-            application_time = NOW()          -- 更新申请时间为当前时间
-            rejection_reason = NULL            --清空拒绝理由
+            application_time = NOW(),          -- 更新申请时间为当前时间
+            rejection_reason = NULL
         WHERE id = #{id}                      -- 匹配申请 ID
           AND adopter_id = #{adopterId}        -- 确保是该用户的申请
           AND status = 2                      -- 确保只有已拒绝的申请才能重新提交
@@ -98,6 +99,7 @@
             app.status AS app_status,
             app.application_time AS app_application_time,
             app.address_id AS app_address_id,
+            app.rejection_reason AS app_rejection_reason,
             p.name AS p_name,
             p.type AS p_type,
             p.breed AS p_breed,
