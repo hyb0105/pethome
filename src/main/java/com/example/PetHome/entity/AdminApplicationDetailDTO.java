@@ -36,4 +36,6 @@ public class AdminApplicationDetailDTO {
     private String addressDistrict;
     private String addressDetailedAddress;
     private Integer addressIsDefault;
+    // 【【新增这一行】】
+    private String rejectionReason;
 }
