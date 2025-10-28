@@ -13,6 +13,8 @@
         <result property="reason" column="reason" />
         <result property="status" column="status" />
         <result property="applicationTime" column="application_time" />
+        <result property="rejectionReason" column="rejection_reason" />
+        <result property="petName" column="pet_name" />
     </resultMap>
 
     <insert id="insertApplication" parameterType="com.example.PetHome.entity.AdoptionApplication" useGeneratedKeys="true" keyProperty="id">
@@ -27,7 +29,11 @@
     </select>
 
     <select id="findApplicationsByUserId" resultMap="ApplicationResultMap">
-        SELECT * FROM adoption_application WHERE adopter_id = #{adopterId} ORDER BY application_time DESC
+        SELECT app.*, p.name AS pet_name
+        FROM adoption_application app
+                 LEFT JOIN pet p ON app.pet_id = p.id
+        WHERE app.adopter_id = #{adopterId}
+        ORDER BY app.application_time DESC
     </select>
 
     <select id="findApplicationById" resultMap="ApplicationResultMap">
@@ -35,7 +41,14 @@
     </select>
 
     <update id="updateApplicationStatus">
-        UPDATE adoption_application SET status = #{status} WHERE id = #{id}
+        UPDATE adoption_application
+        SET
+            status = #{status},
+            rejection_reason = CASE
+                                   WHEN #{status} = 2 THEN #{rejectionReason}
+                                   ELSE rejection_reason
+                END
+        WHERE id = #{id}
     </update>
     <update id="resubmitApplicationStatus">
         UPDATE adoption_application

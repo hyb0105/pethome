@@ -15,4 +15,5 @@ public class AdoptionApplication {
     private Timestamp applicationTime;
     private Integer addressId;
     private String rejectionReason; // 【新增】
+    private String petName;
 }
