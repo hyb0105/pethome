@@ -55,6 +55,9 @@
             <if test="authorId != null">
                 AND p.author_id = #{authorId}
             </if>
+            <if test="title != null and title != ''">
+                AND p.title LIKE CONCAT('%', #{title}, '%')
+            </if>
         </where>
         ORDER BY p.create_time DESC
     </select>

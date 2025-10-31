@@ -44,27 +44,38 @@ public class PetPostController {
     public PageResult<PetPost> getAllPosts(
             @RequestParam(required = false) String category,
             @RequestParam(required = false) Integer status, // 管理员可按状态筛选
+            @RequestParam(required = false) String title,
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize
     ) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = isAdmin(auth);
 
-        return petPostService.getAllPosts(category, status, pageNum, pageSize, isAdmin);
+        return petPostService.getAllPosts(category, status, title, pageNum, pageSize, isAdmin);
     }
 
     // (公开/管理员) 获取帖子详情
     @GetMapping("/{id}")
-    public ResponseEntity<PetPost> getPostDetail(@PathVariable Integer id) {
+    public ResponseEntity<PetPost> getPostDetail(@PathVariable Integer id, Principal principal) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = isAdmin(auth);
 
-        PetPost post = petPostService.getPostDetail(id, isAdmin);
+        PetPost post = petPostService.getPostDetail(id, isAdmin, principal);
         if (post != null) {
             return ResponseEntity.ok(post);
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+    @GetMapping("/my")
+    @PreAuthorize("isAuthenticated()")
+    public PageResult<PetPost> getMyPosts(
+            @RequestParam(required = false) Integer status, // 按状态筛选
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            Principal principal
+    ) {
+        return petPostService.getMyPosts(principal.getName(), status, pageNum, pageSize);
     }
 
     // (管理员) 审核帖子 (批准或拒绝)
@@ -96,6 +107,8 @@ public class PetPostController {
         // 403 Forbidden or 404 Not Found
         return ResponseEntity.status(403).body(Map.of("message", "无权删除或帖子不存在"));
     }
+
+
 
     @Data
     static class AuditRequest {

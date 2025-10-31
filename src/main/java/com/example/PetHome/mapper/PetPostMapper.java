@@ -16,7 +16,9 @@ public interface PetPostMapper {
 
     List<PetPost> findAllPosts(@Param("category") String category,
                                @Param("status") Integer status,
-                               @Param("authorId") Integer authorId);
+                               @Param("authorId") Integer authorId,
+                               @Param("title") String title);
+
 
     int updatePostStatus(@Param("id") Integer id,
                          @Param("status") Integer status,
