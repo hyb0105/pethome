@@ -1,4 +1,3 @@
-// 文件路径: src/main/java/com/example/PetHome/config/SecurityConfig.java
 package com.example.PetHome.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,8 +50,19 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/user/profile").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/user/password").authenticated()
 
+                        // 帖子功能的安全规则
+                        .requestMatchers(HttpMethod.GET, "/api/posts", "/api/posts/**").permitAll() // 公开查看帖子
+                        .requestMatchers(HttpMethod.POST, "/api/posts").authenticated() // 登录后发帖
+                        .requestMatchers(HttpMethod.DELETE, "/api/posts/**").authenticated() // 登录后删帖(Service会验证权限)
+                        .requestMatchers(HttpMethod.PUT, "/api/posts/**/audit").hasAuthority("ROLE_ADMIN") // 仅管理员审核
+
+
+                        // 【【【 在这里添加以下 2 行 】】】
+                        .requestMatchers(HttpMethod.GET, "/api/applications").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/user/all").hasAuthority("ROLE_ADMIN")
+
+
                         .requestMatchers("/uploads/**").permitAll() // 允许公开访问上传的文件
-                        // ... 其他requestMatchers规则保持不变 ...
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
