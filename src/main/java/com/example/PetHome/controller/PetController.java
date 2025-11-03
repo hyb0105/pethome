@@ -32,6 +32,7 @@ public class PetController {
             @RequestParam(required = false) String breed,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) Integer gender,
+            @RequestParam(required = false) Integer status,
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize
     ) {
@@ -41,7 +42,7 @@ public class PetController {
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
         // 【修改】将 isAdmin 结果传递给 Service
-        return petService.getAllPets(type, breed, city, gender, pageNum, pageSize, isAdmin);
+        return petService.getAllPets(type, breed, city, gender, status, pageNum, pageSize, isAdmin);
     }
 
     @GetMapping("/{id}")

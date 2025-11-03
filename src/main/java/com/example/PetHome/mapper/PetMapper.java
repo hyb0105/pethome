@@ -14,6 +14,7 @@ public interface PetMapper {
                           @Param("breed") String breed,
                           @Param("city") String city,
                           @Param("gender") Integer gender,
+                          @Param("status") Integer status,
                           @Param("isAdmin") boolean isAdmin);
 
 

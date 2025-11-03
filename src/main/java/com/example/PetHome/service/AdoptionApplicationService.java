@@ -5,6 +5,8 @@ import com.example.PetHome.mapper.AdoptionApplicationMapper;
 import com.example.PetHome.mapper.PetMapper;
 import com.example.PetHome.mapper.UserMapper;
 import com.example.PetHome.mapper.AddressMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -174,7 +176,12 @@ public class AdoptionApplicationService {
         return affectedRows > 0;
     }
 
-    public List<AdoptionApplication> getAllApplications() {
-        return applicationMapper.findAllApplications();
+    // 【【修改：添加分页和 status，返回 PageResult】】
+    public PageResult<AdoptionApplication> getAllApplications(Integer status, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<AdoptionApplication> applications = applicationMapper.findAllApplications(status);
+
+        PageInfo<AdoptionApplication> pageInfo = new PageInfo<>(applications);
+        return new PageResult<>(pageInfo.getTotal(), pageInfo.getList());
     }
 }

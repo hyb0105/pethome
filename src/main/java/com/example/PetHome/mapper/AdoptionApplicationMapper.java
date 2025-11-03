@@ -12,7 +12,7 @@ public interface AdoptionApplicationMapper {
     int insertApplication(AdoptionApplication application);
 
     // (管理员) 查询所有申请
-    List<AdoptionApplication> findAllApplications();
+    List<AdoptionApplication> findAllApplications(@Param("status") Integer status);
 
     // (用户) 根据用户ID查询自己的申请
     List<AdoptionApplication> findApplicationsByUserId(Integer adopterId);

@@ -37,6 +37,9 @@
             <if test="!isAdmin">
                 status = 0
             </if>
+            <if test="status != null">
+                AND `status` = #{status}
+            </if>
             <if test="type != null and type != ''">
                 AND `type` LIKE CONCAT('%', #{type}, '%')
             </if>

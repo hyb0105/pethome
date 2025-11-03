@@ -40,12 +40,12 @@ public class PetService {
     }
 
     // 【修改】修改getAllPets方法，增加分页参数
-    public PageResult<Pet> getAllPets(String type, String breed, String city, Integer gender, Integer pageNum, Integer pageSize, boolean isAdmin) {
+    public PageResult<Pet> getAllPets(String type, String breed, String city, Integer gender, Integer status, Integer pageNum, Integer pageSize, boolean isAdmin) {
         // 1. 设置分页参数
         PageHelper.startPage(pageNum, pageSize);
 
         // 2. 执行查询 (这行代码和原来一样，PageHelper会自动拦截)
-        List<Pet> petList = petMapper.findAllPets(type, breed, city, gender, isAdmin);
+        List<Pet> petList = petMapper.findAllPets(type, breed, city, gender, status, isAdmin);
 
         // 3. 包装查询结果到PageInfo对象中，获取总记录数等信息
         PageInfo<Pet> pageInfo = new PageInfo<>(petList);

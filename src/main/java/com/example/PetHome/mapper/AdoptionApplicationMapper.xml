@@ -25,7 +25,13 @@
     </insert>
 
     <select id="findAllApplications" resultMap="ApplicationResultMap">
-        SELECT * FROM adoption_application ORDER BY application_time DESC
+        SELECT * FROM adoption_application
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+        </where>
+        ORDER BY application_time DESC
     </select>
 
     <select id="findApplicationsByUserId" resultMap="ApplicationResultMap">

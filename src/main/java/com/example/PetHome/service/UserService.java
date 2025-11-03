@@ -1,8 +1,11 @@
 package com.example.PetHome.service;
 
+import com.example.PetHome.entity.PageResult;
 import com.example.PetHome.entity.User;
 import com.example.PetHome.mapper.UserMapper;
 import com.example.PetHome.utils.JwtUtils;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder; // 导入 PasswordEncoder
 import org.springframework.stereotype.Service;
@@ -95,13 +98,17 @@ public class UserService {
         return true;
     }
     // 【新增】(管理员) 获取所有用户列表
-    public List<User> getAllUsers() {
+    public PageResult<User> getAllUsers(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
         List<User> users = userMapper.findAllUsers();
+
         // 遍历列表，清空密码
         for (User user : users) {
             user.setPassword(null);
         }
-        return users;
+
+        PageInfo<User> pageInfo = new PageInfo<>(users);
+        return new PageResult<>(pageInfo.getTotal(), pageInfo.getList());
     }
 
     // 【新增】(管理员) 更新指定ID用户的信息

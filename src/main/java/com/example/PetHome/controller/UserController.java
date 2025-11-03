@@ -1,5 +1,6 @@
 package com.example.PetHome.controller;
 
+import com.example.PetHome.entity.PageResult;
 import com.example.PetHome.entity.User;
 import com.example.PetHome.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,9 +99,12 @@ public class UserController {
     // 【新增】(管理员) 获取所有用户列表
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+    public ResponseEntity<PageResult<User>> getAllUsers(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ) {
+        PageResult<User> usersPage = userService.getAllUsers(pageNum, pageSize);
+        return ResponseEntity.ok(usersPage);
     }
 
     // 【新增】(管理员) 更新指定ID用户的信息

@@ -2,6 +2,7 @@ package com.example.PetHome.controller;
 
 import com.example.PetHome.entity.AdminApplicationDetailDTO;
 import com.example.PetHome.entity.AdoptionApplication;
+import com.example.PetHome.entity.PageResult;
 import com.example.PetHome.service.AdoptionApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,8 +43,12 @@ public class AdoptionApplicationController {
     // 管理员查看所有申请记录
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public List<AdoptionApplication> getAllApplications() {
-        return applicationService.getAllApplications();
+    public PageResult<AdoptionApplication> getAllApplications(
+            @RequestParam(required = false) Integer status,
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ) {
+        return applicationService.getAllApplications(status, pageNum, pageSize);
     }
 
     // 【修改】管理员审批申请
