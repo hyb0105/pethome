@@ -55,6 +55,13 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET, "/api/posts/my").authenticated()
 
+                        // 【【【 新增：评论功能 】】】
+                        .requestMatchers(HttpMethod.GET, "/api/comments/pet/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/comments").authenticated()
+
+                        .requestMatchers(HttpMethod.GET, "/api/comments/all").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/comments/**").authenticated()
+
                         // 【【【 在这里修复了路径 】】】
                         .requestMatchers(HttpMethod.PUT, "/api/posts/*/audit").hasAuthority("ROLE_ADMIN") // 仅管理员审核 (使用 * 替代 **)
 
