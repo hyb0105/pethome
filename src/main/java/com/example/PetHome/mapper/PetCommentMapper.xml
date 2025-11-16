@@ -51,5 +51,7 @@
     <delete id="deleteCommentById">
         DELETE FROM pet_comment WHERE id = #{id}
     </delete>
-
+    <delete id="deleteCommentsByPetId">
+        DELETE FROM pet_comment WHERE pet_id = #{petId}
+    </delete>
 </mapper>

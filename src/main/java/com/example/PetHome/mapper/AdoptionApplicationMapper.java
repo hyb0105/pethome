@@ -28,7 +28,8 @@ public interface AdoptionApplicationMapper {
 
     // 【新增】用户重新提交申请 (更新状态和时间)
     int resubmitApplicationStatus(@Param("id") Integer id, @Param("adopterId") Integer adopterId);
-
     // 【修改】用户重新提交申请 (更新状态、时间和可编辑字段)
     int resubmitApplication(AdoptionApplication application);
+    // 【【【 新增这个方法 】】】
+    int deleteApplicationsByPetId(Integer petId);
 }

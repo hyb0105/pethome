@@ -25,4 +25,7 @@ public interface PetCommentMapper {
      * (管理员) 删除评论
      */
     int deleteCommentById(Integer id);
+
+    // 【【【 新增这个方法 】】】
+    int deleteCommentsByPetId(Integer petId);
 }

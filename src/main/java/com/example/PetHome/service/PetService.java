@@ -4,13 +4,17 @@ import com.example.PetHome.entity.Pet;
 import com.example.PetHome.entity.User;
 import com.example.PetHome.mapper.PetMapper;
 import com.example.PetHome.mapper.UserMapper;
+
+import com.example.PetHome.mapper.AdoptionApplicationMapper;
+import com.example.PetHome.mapper.PetCommentMapper;
+import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 // 【新增】导入PageHelper相关类
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-
 import com.example.PetHome.entity.Pet;
 import com.example.PetHome.entity.User;
 // 【新增】导入我们刚创建的PageResult
@@ -24,6 +28,13 @@ public class PetService {
 
     @Autowired
     private UserMapper userMapper;
+
+    // 【【【 新增注入 】】】
+    @Autowired(required = false) // required=false 避免在旧测试中出错
+    private AdoptionApplicationMapper applicationMapper;
+
+    @Autowired(required = false) // required=false 避免在旧测试中出错
+    private PetCommentMapper commentMapper;
 
     public Pet addPet(Pet pet, String ownerUsername) {
         User owner = userMapper.findByUsername(ownerUsername);
@@ -59,7 +70,20 @@ public class PetService {
         return petMapper.findPetById(pet.getId());
     }
 
+    // 【【【 修改：添加 @Transactional 并先删除子记录 】】】
+    @Transactional
     public boolean deletePet(Integer id) {
+        // 1. 先删除所有关联的领养申请
+        if (applicationMapper != null) {
+            applicationMapper.deleteApplicationsByPetId(id);
+        }
+
+        // 2. 再删除所有关联的评论
+        if (commentMapper != null) {
+            commentMapper.deleteCommentsByPetId(id);
+        }
+
+        // 3. 最后删除宠物
         return petMapper.deletePetById(id) > 0;
     }
 }

@@ -5,12 +5,31 @@
 <mapper namespace="com.example.PetHome.mapper.PetPostMapper">
 
     <resultMap id="PetPostResultMap" type="com.example.PetHome.entity.PetPost">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="content" column="content"/>
+        <result property="category" column="category"/>
+        <result property="coverImageUrl" column="cover_image_url"/>
+        <result property="authorId" column="author_id"/>
+        <result property="status" column="status"/>
+        <result property="views" column="views"/>
+        <result property="likes" column="likes"/>
+        <result property="collections" column="collections"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="auditTime" column="audit_time"/>
+        <result property="rejectionReason" column="rejection_reason"/>
+        <result property="authorName" column="author_name"/>
         <result property="petName" column="pet_name"/>
-
         <result property="likedByCurrentUser" column="liked_by_current_user"/>
     </resultMap>
 
     <insert id="insertPost" parameterType="com.example.PetHome.entity.PetPost" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pet_post
+            (title, summary, content, category, cover_image_url, author_id, status)
+        VALUES
+            (#{title}, #{summary}, #{content}, #{category}, #{coverImageUrl}, #{authorId}, #{status})
     </insert>
 
     <select id="findPostById" resultMap="PetPostResultMap">
@@ -45,9 +64,16 @@
     </select>
 
     <update id="updatePostStatus">
+        UPDATE pet_post
+        SET
+            status = #{status},
+            rejection_reason = #{rejectionReason},
+            audit_time = NOW()
+        WHERE id = #{id}
     </update>
 
     <delete id="deletePostById">
+        DELETE FROM pet_post WHERE id = #{id}
     </delete>
 
     <update id="updateLikeCount">

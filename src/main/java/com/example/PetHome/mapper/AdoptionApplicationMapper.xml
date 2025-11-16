@@ -140,5 +140,8 @@
         WHERE
             app.id = #{id}
     </select>
+    <delete id="deleteApplicationsByPetId">
+        DELETE FROM adoption_application WHERE pet_id = #{petId}
+    </delete>
 
 </mapper>
