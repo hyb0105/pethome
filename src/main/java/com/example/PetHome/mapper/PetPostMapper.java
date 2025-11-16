@@ -9,15 +9,14 @@ import java.util.List;
 public interface PetPostMapper {
     int insertPost(PetPost post);
 
-    PetPost findPostById(Integer id);
-
-    // 联表查询作者名
-    PetPost findPostDetailById(Integer id);
-
+    // 【修改】所有查询都需要传入 currentUserId
+    PetPost findPostById(@Param("id") Integer id, @Param("currentUserId") Integer currentUserId);
+    PetPost findPostDetailById(@Param("id") Integer id, @Param("currentUserId") Integer currentUserId);
     List<PetPost> findAllPosts(@Param("category") String category,
                                @Param("status") Integer status,
                                @Param("authorId") Integer authorId,
-                               @Param("title") String title);
+                               @Param("title") String title,
+                               @Param("currentUserId") Integer currentUserId); // 【新增】
 
 
     int updatePostStatus(@Param("id") Integer id,
@@ -25,4 +24,9 @@ public interface PetPostMapper {
                          @Param("rejectionReason") String rejectionReason);
 
     int deletePostById(Integer id);
+
+    // 【【【 新增：更新计数的SQL 】】】
+    int updateLikeCount(@Param("postId") Integer postId, @Param("amount") int amount);
+    int incrementViewCount(Integer postId);
+
 }

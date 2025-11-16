@@ -5,74 +5,57 @@
 <mapper namespace="com.example.PetHome.mapper.PetPostMapper">
 
     <resultMap id="PetPostResultMap" type="com.example.PetHome.entity.PetPost">
-        <id property="id" column="id"/>
-        <result property="title" column="title"/>
-        <result property="summary" column="summary"/>
-        <result property="content" column="content"/>
-        <result property="category" column="category"/>
-        <result property="coverImageUrl" column="cover_image_url"/>
-        <result property="authorId" column="author_id"/>
-        <result property="status" column="status"/>
-        <result property="views" column="views"/>
-        <result property="likes" column="likes"/>
-        <result property="collections" column="collections"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateTime" column="update_time"/>
-        <result property="auditTime" column="audit_time"/>
-        <result property="rejectionReason" column="rejection_reason"/>
-        <result property="authorName" column="author_name"/>
+        <result property="petName" column="pet_name"/>
+
+        <result property="likedByCurrentUser" column="liked_by_current_user"/>
     </resultMap>
 
     <insert id="insertPost" parameterType="com.example.PetHome.entity.PetPost" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO pet_post
-            (title, summary, content, category, cover_image_url, author_id, status)
-        VALUES
-            (#{title}, #{summary}, #{content}, #{category}, #{coverImageUrl}, #{authorId}, #{status})
     </insert>
 
     <select id="findPostById" resultMap="PetPostResultMap">
-        SELECT * FROM pet_post WHERE id = #{id}
+        SELECT p.*, (pl.user_id IS NOT NULL) AS liked_by_current_user
+        FROM pet_post p
+                 LEFT JOIN post_like pl ON p.id = pl.post_id AND pl.user_id = #{currentUserId}
+        WHERE p.id = #{id}
     </select>
 
     <select id="findPostDetailById" resultMap="PetPostResultMap">
-        SELECT p.*, u.username AS author_name
+        SELECT p.*, u.username AS author_name,
+               (pl.user_id IS NOT NULL) AS liked_by_current_user
         FROM pet_post p
                  LEFT JOIN user u ON p.author_id = u.id
+                 LEFT JOIN post_like pl ON p.id = pl.post_id AND pl.user_id = #{currentUserId}
         WHERE p.id = #{id}
     </select>
 
     <select id="findAllPosts" resultMap="PetPostResultMap">
-        SELECT p.*, u.username AS author_name
+        SELECT p.*, u.username AS author_name,
+        (pl.user_id IS NOT NULL) AS liked_by_current_user
         FROM pet_post p
         LEFT JOIN user u ON p.author_id = u.id
+        LEFT JOIN post_like pl ON p.id = pl.post_id AND pl.user_id = #{currentUserId}
         <where>
-            <if test="status != null">
-                AND p.status = #{status}
-            </if>
-            <if test="category != null and category != ''">
-                AND p.category = #{category}
-            </if>
-            <if test="authorId != null">
-                AND p.author_id = #{authorId}
-            </if>
-            <if test="title != null and title != ''">
-                AND p.title LIKE CONCAT('%', #{title}, '%')
-            </if>
+            <if test="status != null"> AND p.status = #{status} </if>
+            <if test="category != null and category != ''"> AND p.category = #{category} </if>
+            <if test="authorId != null"> AND p.author_id = #{authorId} </if>
+            <if test="title != null and title != ''"> AND p.title LIKE CONCAT('%', #{title}, '%') </if>
         </where>
         ORDER BY p.create_time DESC
     </select>
 
     <update id="updatePostStatus">
-        UPDATE pet_post
-        SET
-            status = #{status},
-            rejection_reason = #{rejectionReason},
-            audit_time = NOW()
-        WHERE id = #{id}
     </update>
 
     <delete id="deletePostById">
-        DELETE FROM pet_post WHERE id = #{id}
     </delete>
+
+    <update id="updateLikeCount">
+        UPDATE pet_post SET likes = likes + #{amount} WHERE id = #{postId}
+    </update>
+
+    <update id="incrementViewCount">
+        UPDATE pet_post SET views = views + 1 WHERE id = #{postId}
+    </update>
 
 </mapper>

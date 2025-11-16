@@ -50,7 +50,7 @@ public class PetCommentController {
         return commentService.getAllComments(content, authorName, pageNum, pageSize);
     }
 
-    
+
     // 【【【 修改：删除评论的接口 】】】
     @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()") // 权限改为“已登录”

@@ -39,34 +39,34 @@ public class PetPostController {
         return ResponseEntity.badRequest().build();
     }
 
-    // (公开/管理员) 获取帖子列表
+
+    // 【修改】获取帖子列表
     @GetMapping
     public PageResult<PetPost> getAllPosts(
             @RequestParam(required = false) String category,
-            @RequestParam(required = false) Integer status, // 管理员可按状态筛选
+            @RequestParam(required = false) Integer status,
             @RequestParam(required = false) String title,
             @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            Principal principal // 【新增】
     ) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = isAdmin(auth);
-
-        return petPostService.getAllPosts(category, status, title, pageNum, pageSize, isAdmin);
+        // 【修改】传入 principal
+        return petPostService.getAllPosts(category, status, title, pageNum, pageSize, isAdmin, principal);
     }
 
-    // (公开/管理员) 获取帖子详情
+    // 【修改】获取帖子详情
     @GetMapping("/{id}")
-    public ResponseEntity<PetPost> getPostDetail(@PathVariable Integer id, Principal principal) {
+    public ResponseEntity<PetPost> getPostDetail(@PathVariable Integer id, Principal principal) { // 【新增】
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = isAdmin(auth);
 
-        PetPost post = petPostService.getPostDetail(id, isAdmin, principal);
-        if (post != null) {
-            return ResponseEntity.ok(post);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        PetPost post = petPostService.getPostDetail(id, isAdmin, principal); // 【修改】
+        if (post != null) { return ResponseEntity.ok(post); }
+        else { return ResponseEntity.notFound().build(); }
     }
+
     @GetMapping("/my")
     @PreAuthorize("isAuthenticated()")
     public PageResult<PetPost> getMyPosts(
@@ -89,7 +89,7 @@ public class PetPostController {
             return ResponseEntity.badRequest().body(Map.of("message", "拒绝时必须填写理由"));
         }
 
-        boolean success = petPostService.auditPost(id, request.getStatus(), request.getRejectionReason());
+        boolean success = petPostService.auditPost(id, request.getStatus(), request.getRejectionReason(), principal);
         if (success) {
             return ResponseEntity.ok(Map.of("message", "审核操作成功"));
         }
@@ -108,7 +108,43 @@ public class PetPostController {
         return ResponseEntity.status(403).body(Map.of("message", "无权删除或帖子不存在"));
     }
 
+// 【【【 新增：三个API端点 】】】
 
+    /**
+     * 点赞/取消点赞
+     */
+    @PostMapping("/{id}/like")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> toggleLike(@PathVariable Integer id, Principal principal) {
+        boolean success = petPostService.toggleLike(id, principal.getName());
+        if (success) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    /**
+     * 记录浏览
+     */
+    @PostMapping("/{id}/view")
+    @PreAuthorize("isAuthenticated()") // 只有登录用户才记录
+    public ResponseEntity<?> recordView(@PathVariable Integer id, Principal principal) {
+        petPostService.recordView(id, principal.getName());
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 获取我赞过的帖子
+     */
+    @GetMapping("/my/likes")
+    @PreAuthorize("isAuthenticated()")
+    public PageResult<PetPost> getLikedPosts(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            Principal principal
+    ) {
+        return petPostService.getLikedPosts(principal.getName(), pageNum, pageSize);
+    }
 
     @Data
     static class AuditRequest {

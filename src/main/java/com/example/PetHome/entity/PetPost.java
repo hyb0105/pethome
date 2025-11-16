@@ -23,4 +23,6 @@ public class PetPost {
 
     // DTO 辅助字段 (用于联表查询)
     private String authorName;
+    // DTO 字段：当前登录的用户是否已点赞此帖
+    private boolean likedByCurrentUser;
 }
