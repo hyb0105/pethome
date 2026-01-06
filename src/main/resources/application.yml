@@ -14,7 +14,7 @@ spring:
 
 # 【新增】自定义配置项，用于指定文件存储的物理路径
 file:
-  upload-dir: C:\Users\hyb\Desktop\毕设\image/ # 您可以修改为您希望存储图片的本地路径
+  upload-dir: C:/Users/hyb/Desktop/毕设/image/ # 您可以修改为您希望存储图片的本地路径
 
 logging:
   level:
