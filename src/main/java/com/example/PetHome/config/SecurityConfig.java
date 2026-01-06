@@ -73,7 +73,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/applications").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/user/all").hasAuthority("ROLE_ADMIN")
 
-                        .requestMatchers("/uploads/**").permitAll() // 允许公开访问上传的文件
+                        .requestMatchers(HttpMethod.GET, "/api/pets", "/api/pets/**", "/api/carousels").permitAll() // 允许公开访问上传的文件
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

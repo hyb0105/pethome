@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.PetHome.mapper.CarouselMapper">
+
+    <select id="findAll" resultType="com.example.PetHome.entity.Carousel">
+        SELECT * FROM carousel ORDER BY sort_order ASC, id DESC
+    </select>
+
+    <insert id="insert" parameterType="com.example.PetHome.entity.Carousel">
+        INSERT INTO carousel (image_url, link_url, title, sort_order)
+        VALUES (#{imageUrl}, #{linkUrl}, #{title}, #{sortOrder})
+    </insert>
+
+    <update id="update" parameterType="com.example.PetHome.entity.Carousel">
+        UPDATE carousel
+        SET image_url = #{imageUrl},
+            link_url = #{linkUrl},
+            title = #{title},
+            sort_order = #{sortOrder}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM carousel WHERE id = #{id}
+    </delete>
+
+</mapper>
