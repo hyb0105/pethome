@@ -14,9 +14,17 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 将 /uploads/** 的URL请求映射到我们配置的物理磁盘路径
+        // 【关键修复】确保路径格式为 file:///C:/...
+        // 你的 uploadDir 是 "C:/Users/hyb/Desktop/毕设/image/"
+        // 拼接后应该是 "file:///C:/Users/hyb/Desktop/毕设/image/"
+
+        String path = "file:///" + uploadDir;
+
+        // 防止 uploadDir 没带斜杠的容错处理（可选）
+        // if (!uploadDir.endsWith("/")) { path += "/"; }
+
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + uploadDir);
+                .addResourceLocations(path);
     }
 
     // 全局 CORS 配置 (防止跨域问题)
