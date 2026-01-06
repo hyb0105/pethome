@@ -34,6 +34,9 @@
     <select id="findAllUsers" resultMap="UserResultMap">
         SELECT * FROM user ORDER BY id ASC
     </select>
+    <select id="countUsers" resultType="Integer">
+        SELECT COUNT(*) FROM user
+    </select>
 
     <update id="updateUser" parameterType="com.example.PetHome.entity.User">
         UPDATE user

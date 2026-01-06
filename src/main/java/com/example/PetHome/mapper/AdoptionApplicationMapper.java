@@ -32,4 +32,6 @@ public interface AdoptionApplicationMapper {
     int resubmitApplication(AdoptionApplication application);
     // 【【【 新增这个方法 】】】
     int deleteApplicationsByPetId(Integer petId);
+
+    Integer countPendingApplications();
 }

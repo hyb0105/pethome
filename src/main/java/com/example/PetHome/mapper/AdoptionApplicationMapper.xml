@@ -45,6 +45,9 @@
     <select id="findApplicationById" resultMap="ApplicationResultMap">
         SELECT * FROM adoption_application WHERE id = #{id}
     </select>
+    <select id="countPendingApplications" resultType="Integer">
+        SELECT COUNT(*) FROM adoption_application WHERE status = 0
+    </select>
 
     <update id="updateApplicationStatus">
         UPDATE adoption_application

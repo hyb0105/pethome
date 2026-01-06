@@ -14,8 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 【调试模式】直接写死 D 盘路径，并在控制台打印
-        System.out.println("正在配置静态资源映射：file:///D:/pethome_images/");
+
 
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:///D:/pethome_images/");

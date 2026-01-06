@@ -31,4 +31,6 @@ public interface UserMapper {
 
     // 根据ID删除用户
     int deleteUserById(@Param("id") Integer id);
+
+    Integer countUsers();
 }

@@ -28,5 +28,6 @@ public interface PetPostMapper {
     // 【【【 新增：更新计数的SQL 】】】
     int updateLikeCount(@Param("postId") Integer postId, @Param("amount") int amount);
     int incrementViewCount(Integer postId);
+    Integer countPendingPosts();
 
 }

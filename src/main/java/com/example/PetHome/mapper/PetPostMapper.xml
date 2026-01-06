@@ -62,6 +62,9 @@
         </where>
         ORDER BY p.create_time DESC
     </select>
+    <select id="countPendingPosts" resultType="Integer">
+        SELECT COUNT(*) FROM pet_post WHERE status = 0
+    </select>
 
     <update id="updatePostStatus">
         UPDATE pet_post

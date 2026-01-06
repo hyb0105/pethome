@@ -18,6 +18,8 @@ public interface PetMapper {
                           @Param("isAdmin") boolean isAdmin);
 
 
+
     int updatePet(Pet pet);
     int deletePetById(Integer id);
+    Integer countPets();
 }

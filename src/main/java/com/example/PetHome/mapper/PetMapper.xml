@@ -55,6 +55,9 @@
         </where>
         ORDER BY create_time DESC
     </select>
+    <select id="countPets" resultType="Integer">
+        SELECT COUNT(*) FROM pet
+    </select>
 
     <update id="updatePet" parameterType="com.example.PetHome.entity.Pet">
         UPDATE pet
