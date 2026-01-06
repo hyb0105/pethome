@@ -19,11 +19,8 @@ public class FileUploadController {
     @PostMapping("/upload")
     @PreAuthorize("isAuthenticated()") // 只有登录用户才能上传
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+        // 直接返回字符串 URL
         String fileUrl = fileStorageService.storeFile(file);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("url", fileUrl);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(fileUrl);
     }
 }
