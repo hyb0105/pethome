@@ -14,17 +14,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 【关键修复】确保路径格式为 file:///C:/...
-        // 你的 uploadDir 是 "C:/Users/hyb/Desktop/毕设/image/"
-        // 拼接后应该是 "file:///C:/Users/hyb/Desktop/毕设/image/"
-
-        String path = "file:///" + uploadDir;
-
-        // 防止 uploadDir 没带斜杠的容错处理（可选）
-        // if (!uploadDir.endsWith("/")) { path += "/"; }
+        // 【调试模式】直接写死 D 盘路径，并在控制台打印
+        System.out.println("正在配置静态资源映射：file:///D:/pethome_images/");
 
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations(path);
+                .addResourceLocations("file:///D:/pethome_images/");
     }
 
     // 全局 CORS 配置 (防止跨域问题)
