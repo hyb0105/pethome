@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -16,15 +18,17 @@ public class FileUploadController {
 
     @PostMapping("/upload")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        // 1. 保存文件，拿到文件名 (例如: uuid.jpg)
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+        // 1. 保存文件，获取文件名
         String fileName = fileStorageService.storeFile(file);
 
-        // 2. 【关键修正】拼接完整的访问路径
-        // 这里的 /uploads/ 对应 WebConfig 中的配置
-        String fileUrl = "http://localhost:8080/uploads/" + fileName;
+        // 2. 拼接完整 URL (确保 WebConfig 已配置 /uploads/** 映射)
+        String fullUrl = "http://localhost:8080/uploads/" + fileName;
 
-        // 3. 直接返回字符串 URL，前端拿到后直接存入数据库
-        return ResponseEntity.ok(fileUrl);
+        // 3. 返回 JSON 格式 (保持与前端 PetFormModal 兼容)
+        Map<String, String> response = new HashMap<>();
+        response.put("url", fullUrl);
+
+        return ResponseEntity.ok(response);
     }
 }
