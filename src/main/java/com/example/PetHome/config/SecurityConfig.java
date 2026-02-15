@@ -77,9 +77,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/comments/**").authenticated()
 
                         // 点赞/浏览功能
-                        .requestMatchers(HttpMethod.POST, "/api/posts/*/like").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/posts/*/collect").authenticated()       // <--- 修改
                         .requestMatchers(HttpMethod.POST, "/api/posts/*/view").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/posts/my/likes").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/posts/my/collections").authenticated()
 
                         // (管理员) 申请和用户列表
                         .requestMatchers(HttpMethod.GET, "/api/applications").hasAuthority("ROLE_ADMIN")
