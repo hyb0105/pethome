@@ -143,6 +143,12 @@
         WHERE
             app.id = #{id}
     </select>
+
+    <select id="findPendingApplicationsByPetId" resultMap="ApplicationResultMap">
+        SELECT * FROM adoption_application
+        WHERE pet_id = #{petId} AND status = 0
+    </select>
+
     <delete id="deleteApplicationsByPetId">
         DELETE FROM adoption_application WHERE pet_id = #{petId}
     </delete>

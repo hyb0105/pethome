@@ -61,25 +61,53 @@ public class AdoptionApplicationService {
     // 管理员审批申请
     @Transactional
     public boolean approveApplication(Integer applicationId, Integer status, String rejectionReason) {
+        // 1. 获取当前申请
         AdoptionApplication application = applicationMapper.findApplicationById(applicationId);
         if (application == null) {
             return false;
         }
 
+        // 2. 【新增校验】如果该申请已经被处理过（状态不是0），则禁止重复操作
+        // 防止管理员在列表页快速点击导致的数据不一致
+        if (application.getStatus() != 0) {
+            throw new RuntimeException("该申请已被处理，无法重复审批");
+        }
+
+        // 3. 更新当前申请的状态
         applicationMapper.updateApplicationStatus(applicationId, status, rejectionReason);
 
-        // 如果审核通过 (status=1)，则将宠物状态更新为"已领养"
-        if (status == 1) {
+        // 4. 处理后续逻辑
+        if (status == 1) { // 审核通过
             Pet pet = petMapper.findPetById(application.getPetId());
             if (pet != null) {
+                // A. 将宠物状态更新为"已领养"
                 pet.setStatus(1);
                 petMapper.updatePet(pet);
+
+                // B. 【新增核心逻辑】自动拒绝该宠物的其他所有"待审核"申请
+                List<AdoptionApplication> pendingApps = applicationMapper.findPendingApplicationsByPetId(pet.getId());
+                for (AdoptionApplication otherApp : pendingApps) {
+                    // 排除当前刚刚批准的这个申请
+                    if (!otherApp.getId().equals(applicationId)) {
+                        // 将其他申请设为已拒绝 (status=2)
+                        applicationMapper.updateApplicationStatus(
+                                otherApp.getId(),
+                                2,
+                                "抱歉，该宠物已被其他领养人优先领养。"
+                        );
+                    }
+                }
             }
         }
-        // 如果审核不通过 (status=2)，则将宠物状态恢复为"待领养"
-        else if (status == 2) {
+        else if (status == 2) { // 审核不通过
+            // 仅仅是拒绝当前申请，宠物状态无需改变（保持为0-待领养，供其他人申请）
+            // 注意：如果你之前的逻辑是申请时把宠物改成了"审核中"，这里才需要恢复为0。
+            // 现在的逻辑是申请时宠物状态不变(0)，所以这里不需要额外操作宠物表。
+
+            // 为了保险起见，确保宠物状态是正确的（可选）
             Pet pet = petMapper.findPetById(application.getPetId());
-            if (pet != null && pet.getStatus() == 2) { // 确保是从审核中状态恢复
+            if (pet != null && pet.getStatus() != 1) {
+                // 只要没被领养，确保它是待领养状态
                 pet.setStatus(0);
                 petMapper.updatePet(pet);
             }

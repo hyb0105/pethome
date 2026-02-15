@@ -34,4 +34,7 @@ public interface AdoptionApplicationMapper {
     int deleteApplicationsByPetId(Integer petId);
 
     Integer countPendingApplications();
+
+    // 【【新增】】 查询指定宠物的所有“待审核”申请
+    List<AdoptionApplication> findPendingApplicationsByPetId(@Param("petId") Integer petId);
 }
