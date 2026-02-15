@@ -10,7 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal; // 【【【 1. 修复：导入 Principal 】】】
+import java.security.Principal;// 【【【 1. 修复：导入 Principal 】】】
 import java.util.Map;
 import lombok.Data;
 
@@ -115,9 +115,10 @@ public class PetPostController {
     /**
      * 点赞/取消点赞
      */
-    @PostMapping("/{id}/like")
+    @PostMapping("/{id}/collect") // 【修改 API 路径】
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> toggleLike(@PathVariable Integer id, Principal principal) { // <-- 需要 import
+    public ResponseEntity<?> toggleCollection(@PathVariable Integer id, Principal principal) {
+        // 复用 Service 里的 toggleLike 方法，因为数据库没变
         boolean success = petPostService.toggleLike(id, principal.getName());
         if (success) {
             return ResponseEntity.ok().build();
@@ -138,13 +139,14 @@ public class PetPostController {
     /**
      * 获取我赞过的帖子
      */
-    @GetMapping("/my/likes")
+    @GetMapping("/my/collections") // 【修改 API 路径】
     @PreAuthorize("isAuthenticated()")
-    public PageResult<PetPost> getLikedPosts(
+    public PageResult<PetPost> getCollectedPosts(
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize,
-            Principal principal // <-- 需要 import
+            Principal principal
     ) {
+        // 复用 Service 里的 getLikedPosts
         return petPostService.getLikedPosts(principal.getName(), pageNum, pageSize);
     }
 
