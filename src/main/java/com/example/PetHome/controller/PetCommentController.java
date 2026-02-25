@@ -22,7 +22,7 @@ public class PetCommentController {
 
     // 获取某只宠物的所有评论
     @GetMapping("/pet/{petId}")
-    @PreAuthorize("isAuthenticated()") // 只有登录用户才能看评论
+//    @PreAuthorize("isAuthenticated()") // 只有登录用户才能看评论
     public ResponseEntity<List<PetComment>> getComments(@PathVariable Integer petId) {
         List<PetComment> comments = commentService.getCommentsByPetId(petId);
         return ResponseEntity.ok(comments);

@@ -71,7 +71,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/posts/*/audit").hasAuthority("ROLE_ADMIN")
 
                         // 评论功能
-                        .requestMatchers(HttpMethod.GET, "/api/comments/pet/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/comments/pet/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/comments").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/comments/all").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/comments/**").authenticated()
