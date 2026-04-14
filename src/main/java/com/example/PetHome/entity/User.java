@@ -14,6 +14,10 @@ public class User {
     private String realName;
     private String idCard;
     private Integer role;
+
+    // 【新增字段】用于逻辑删除。0: 正常, -1: 已删除
+    private Integer status;
+
     private Timestamp createTime;
     private Timestamp updateTime;
 }

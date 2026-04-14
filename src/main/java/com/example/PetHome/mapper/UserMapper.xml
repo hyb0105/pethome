@@ -32,7 +32,7 @@
     </select>
 
     <select id="findAllUsers" resultMap="UserResultMap">
-        SELECT * FROM user ORDER BY id ASC
+        SELECT * FROM user WHERE status = 0
     </select>
     <select id="countUsers" resultType="Integer">
         SELECT COUNT(*) FROM user
@@ -66,7 +66,7 @@
     <update id="updatePassword">
         UPDATE user SET password = #{newPassword}, update_time = NOW() WHERE id = #{id}
     </update>
-    <delete id="deleteUserById">
-        DELETE FROM user WHERE id = #{id}
-    </delete>
+    <update id="deleteUserById" parameterType="int">
+        UPDATE user SET status = -1 WHERE id = #{id}
+    </update>
 </mapper>
